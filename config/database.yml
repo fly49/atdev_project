@@ -1,0 +1,21 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  user: postgres
+  port: 5433
+  pool: 5 
+
+development:
+  <<: *default
+  database: atdev_project_development
+
+test:
+  <<: *default
+  database: atdev_project_test
+
+production:
+  <<: *default
+  database: atdev_project_production
+  username: atdev_project
+  password: <%= ENV['ATDEV_PROJECT_DATABASE_PASSWORD'] %>
