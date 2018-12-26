@@ -8,9 +8,8 @@ class CoinMarketCapWrapper::CurrencyListing
       JSON.parse(responce)
     end
     def save_data_in_redis
-      redis = Redis.new(url: 'redis://localhost:32768/1')
       init_data['data'].each do |currency|
-        redis.set(currency['name'], currency)
+        REDIS.set(currency['name'], currency)
       end
     end
   end
