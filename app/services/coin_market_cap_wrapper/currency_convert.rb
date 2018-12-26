@@ -1,13 +1,12 @@
 class CoinMarketCapWrapper::CurrencyConvert
-  require 'net/http'
+  require 'httparty'
   class << self
     def convert(currency_from, currency_to, currency_give)
-      redis = Redis.new(url: 'redis://localhost:32768/1')
-      data_from = redis.get(currency_from).scan(/\d/).to_s.delete('[]\, "').to_i
-      data_to = redis.get(currency_to).scan(/[A-Z]{3,}/).first
-      uri = URI("https://api.coinmarketcap.com/v2/ticker/#{ data_from }/?convert=#{data_to}")
-      response = Net::HTTP.get(uri)
-      result = JSON.parse(response)['data']
+      data_from = REDIS.get(currency_from).scan(/\d/).to_s.delete('[]\, "').to_i
+      data_to = REDIS.get(currency_to).scan(/[A-Z]{3,}/).first
+      url = "https://api.coinmarketcap.com/v2/ticker/#{ data_from }/?convert=#{data_to}"
+      response = HTTParty.get(url, headers: {'X-CMC_PRO_API_KEY' => ENV["API_KEY"]})
+      result = JSON.parse(response.body)['data']
       prise = exchange_rates(result, data_to)
       Convert.create(currency_from: currency_from,
                      currency_to: currency_to,

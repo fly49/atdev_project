@@ -1,14 +1,17 @@
 class HomeController < ApplicationController
   def index
-    
+  end
+  
+  def convert
+    currency_from, currency_to, currency_give = permitted_params.values
+    CoinMarketCapWrapper::CurrencyConvert.convert(currency_from, currency_to, currency_give)
   end
 
   def history
-    list = Convert.all
-    @result = list.sort_by { |i| i.created_at }.reverse[0...9]
+    @result = Covert.order(created_at: :desc)
   end
-
-  def convert
-    CoinMarketCapWrapper::CurrencyConvert.convert(currency_from, currency_to, currency_given)
+  
+  def permitted_params
+    params.permit(:from, :to, :given)
   end
 end
