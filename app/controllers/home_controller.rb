@@ -4,11 +4,13 @@ class HomeController < ApplicationController
   
   def convert
     currency_from, currency_to, currency_give = permitted_params.values
-    CoinMarketCapWrapper::CurrencyConvert.convert(currency_from, currency_to, currency_give)
+    @convert = CoinMarketCapWrapper::CurrencyConvert.convert(currency_from, currency_to, currency_give)
+    render json: @convert
   end
 
   def history
-    @result = Covert.order(created_at: :desc)
+    @result = Convert.order(created_at: :desc)
+    render json: @result
   end
   
   def permitted_params
